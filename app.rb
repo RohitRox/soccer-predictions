@@ -1,7 +1,8 @@
 # dev hint: shotgun login.rb
 
-require 'rubygems'
 require 'sinatra'
+
+require './config/data.rb'
 
 configure do
   set :public_folder, Proc.new { File.join(root, "static") }
@@ -15,33 +16,64 @@ helpers do
 end
 
 before '/secure/*' do
-  if !session[:identity] then
-    session[:previous_url] = request['REQUEST_PATH']
-    @error = 'Sorry guacamole, you need to be logged in to do that'
-    halt erb(:login_form)
+  if !session[:identity]
+    session[:previous_url] = request.env["REQUEST_PATH"]
+    @error = 'You need to be logged in to do that'
+    halt haml(:login)
   end
 end
 
 get '/' do
-  erb 'Can you handle a <a href="/secure/place">secret</a>?'
+  @matches = Match.all
+  haml :matches
 end
 
-get '/login/form' do 
-  erb :login_form
+
+get "/sign_up" do
+  @user = User.new
+  haml :sign_up
 end
 
-post '/login/attempt' do
-  session[:identity] = params['username']
+post "/sign_up" do
+  @user = User.create(email: params[:email], password: params[:password], password_confirmation: params[:password_confirmation])
+  
+  if @user.save  
+    redirect "/"
+  else
+    haml :sign_up
+  end
+end
+
+
+get '/login' do
+  haml :login
+end
+
+post '/login' do
+  p session
   where_user_came_from = session[:previous_url] || '/'
-  redirect to where_user_came_from 
+  if User.authenticate(params[:email], params[:password])
+    session[:identity] = params['email']
+    redirect to where_user_came_from
+  else
+    @error = "Failed to log in"
+    haml(:login)
+  end
 end
 
-get '/logout' do
+get '/log_out' do
   session.delete(:identity)
-  erb "<div class='alert alert-message'>Logged out</div>"
+  @error = "Logged Out"
+  redirect to "/"
 end
 
 
 get '/secure/place' do
   erb "This is a secret place that only <%=session[:identity]%> has access to!"
+end
+
+
+get '/matches' do
+  @matches = Match.all
+  haml :matches
 end
