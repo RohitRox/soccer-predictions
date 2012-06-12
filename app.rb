@@ -9,8 +9,8 @@ configure do
   enable :sessions
 end
 
-before '/secure/*' do
-  if !session[:identity]
+before '/match/*/predict' do
+  unless logged_in?
     session[:previous_url] = request.env["REQUEST_PATH"]
     @error = 'You need to be logged in to do that'
     halt haml(:login)
@@ -61,8 +61,23 @@ get '/log_out' do
 end
 
 
-get '/secure/place' do
-  erb "This is a secret place that only <%=session[:identity]%> has access to!"
+post "/match/:id/predict" do
+  match = Match.get(params[:id])
+  # if there is more than 10 minutes remaining for the match to kick off then only is the user allowed to predict
+  if [match.team_a, match.team_b].include?("TBD")
+    @error = "The teams for this match haven't been decided yet"
+  elsif match.prediction_deadline_passed?
+    @error = "You are not allowed to predict this close to kick off"
+  else
+    prediction = current_user.predictions.first_or_create(match_id: match.id)
+    prediction.result = params[:prediction]
+    if prediction.save
+      # do something useful
+    else
+      @error = "You can't do that. Trying something naughty huh?"
+    end
+  end
+  haml :matches
 end
 
 

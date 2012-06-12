@@ -36,6 +36,7 @@ class Match
 
   timestamps :created_at, :updated_at
   
+  has n, :predictions
   
   def kick_off_time=(time)
     self[:kick_off_time] = time.is_a?(String) ? DateTime.strptime("#{time} +0000", "%m/%d %H:%M %z") : time
@@ -43,9 +44,15 @@ class Match
     self[:kick_off_time]
   end
   
+  
+  # if the deadline for prediction has passed
+  def prediction_deadline_passed?
+    ((self.kick_off_time - DateTime.now) * 24 * 60).to_f <= 10
+  end
+  
   class << self
     def all_grouped_by_kick_off_date
-      all(order: [:kick_off_time.asc]).group_by(&:kick_off_date)
+      all(:kick_off_date.lte => Date.today, order: [:kick_off_time.desc]).group_by(&:kick_off_date)
     end
   end
   
@@ -63,6 +70,8 @@ class User
   property :crypted_pass, String,   :length => 60..60, :required => true, :writer => :protected
   property :email,        String,   :length => 5..200, :required => true,
   :format => :email_address
+  
+  has n, :predictions
 
   validates_presence_of :password, :password_confirmation, :if => :password_required?
   validates_confirmation_of :password, :if => :password_required?
@@ -116,6 +125,17 @@ class User
 end
 
 
+class Prediction
+  include DataMapper::Resource 
+  
+  property :id, Serial
+  property :result, String, required: true, set: Match::TEAMS.unshift("Draw")
+  
+  timestamps :created_at, :updated_at
+  
+  belongs_to :match
+  belongs_to :user
+end
 
 DataMapper.finalize
 
