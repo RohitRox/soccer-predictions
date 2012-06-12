@@ -30,7 +30,7 @@ class Match
   property :team_a, String, required: true, set: TEAMS.unshift("TBD")
   property :team_b, String, required: true, set: TEAMS.unshift("TBD")
   property :kick_off_date, Date, required: true
-  property :kick_off_time, Time, required: true
+  property :kick_off_time, DateTime, required: true
   property :group, String 
   property :score, String
 
@@ -38,7 +38,7 @@ class Match
   
   
   def kick_off_time=(time)
-    self[:kick_off_time] = time.is_a?(String) ? DateTime.strptime(time, "%m/%d %H:%M").to_time.utc : time
+    self[:kick_off_time] = time.is_a?(String) ? DateTime.strptime("#{time} +0000", "%m/%d %H:%M %z") : time
     self[:kick_off_date] = self[:kick_off_time].to_date
     self[:kick_off_time]
   end
