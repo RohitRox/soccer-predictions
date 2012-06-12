@@ -19,13 +19,18 @@
           %ul.nav.pull-right
             %li.dropdown
               %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}
-                = username
+                = logged_in? ? current_user.email : "Login"
                 %b.caret
               %ul.dropdown-menu
-                %li
-                  %a{:href => "/login/form"} Login
-                %li
-                  %a{:href => "/logout"} Logout
+                - if logged_in?
+                  %li
+                    %a{:href => "/log_out"} Log Out
+                - else
+                  %li
+                    %form{:action => "/login", :method => "post", style: "padding: 20px; margin: 0px;"}
+                      %input{:autofocus => "", :name => "email", :placeholder => "email"}
+                      %input{:name => "password", :placeholder => "password", :type => "password"}
+                        %input.btn.primary{:type => "submit", :value => "Log In", style: "float: right"}
     .container
       - if @error then
         .alert.alert-error= @error

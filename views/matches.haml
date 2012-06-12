@@ -1,6 +1,13 @@
 %table
-  - @matches.each do |match|
+  - @matches_by_date.each do |date, matches|
     %tr
-      %td= match.team_a
-      %td VS
-      %td= match.team_b
+      %th= date
+    - matches.each do |match|
+      %tr
+        %td= match.team_a
+        %td
+          %img{src: country_flag_image(match.team_a) }
+        %td VS
+        %td
+          %img{src: country_flag_image(match.team_b) }
+        %td= match.team_b

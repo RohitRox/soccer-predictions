@@ -9,12 +9,6 @@ configure do
   enable :sessions
 end
 
-helpers do
-  def username
-    session[:identity] ? session[:identity] : 'Hello stranger'
-  end
-end
-
 before '/secure/*' do
   if !session[:identity]
     session[:previous_url] = request.env["REQUEST_PATH"]
@@ -24,7 +18,7 @@ before '/secure/*' do
 end
 
 get '/' do
-  @matches = Match.all
+  @matches_by_date = Match.all_grouped_by_kick_off_date
   haml :matches
 end
 
@@ -50,13 +44,12 @@ get '/login' do
 end
 
 post '/login' do
-  p session
   where_user_came_from = session[:previous_url] || '/'
   if User.authenticate(params[:email], params[:password])
     session[:identity] = params['email']
     redirect to where_user_came_from
   else
-    @error = "Failed to log in"
+    @error = "Incorrect Email/Password"
     haml(:login)
   end
 end
@@ -73,7 +66,23 @@ get '/secure/place' do
 end
 
 
-get '/matches' do
-  @matches = Match.all
-  haml :matches
+
+helpers do
+  def current_user
+    session[:identity].nil? ? nil : (@user ||= User.first(email: session[:identity]))
+  end
+    
+  def logged_in?
+    !current_user.nil?
+  end
+  
+  def country_flag_image(country_name)
+    abbr = case country_name
+    when "Netherlands"; "NED"
+    when "Republic of Ireland"; "IRL"
+    when "Spain"; "ESP"
+    else; country_name[0..2].upcase
+    end
+    "http://img.uefa.com/imgml/flags/50x50/#{abbr}.png"
+  end
 end

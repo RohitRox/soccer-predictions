@@ -6,16 +6,49 @@ DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/developm
 
 class Match
   include DataMapper::Resource
+  
+  TEAMS = [
+    "Croatia",
+    "Czech Republic",
+    "Denmark",
+    "England",
+    "France",
+    "Germany",
+    "Greece",
+    "Italy",
+    "Netherlands",
+    "Poland",
+    "Portugal",
+    "Republic of Ireland",
+    "Russia",
+    "Spain",
+    "Sweden",
+    "Ukraine"
+  ]
 
   property :id, Serial
-  property :team_a, String, required: true
-  property :team_b, String, required: true
+  property :team_a, String, required: true, set: TEAMS.unshift("TBD")
+  property :team_b, String, required: true, set: TEAMS.unshift("TBD")
   property :kick_off_date, Date, required: true
   property :kick_off_time, Time, required: true
   property :group, String 
   property :score, String
 
   timestamps :created_at, :updated_at
+  
+  
+  def kick_off_time=(time)
+    self[:kick_off_time] = time.is_a?(String) ? DateTime.strptime(time, "%m/%d %H:%M").to_time.utc : time
+    self[:kick_off_date] = self[:kick_off_time].to_date
+    self[:kick_off_time]
+  end
+  
+  class << self
+    def all_grouped_by_kick_off_date
+      all(order: [:kick_off_time.asc]).group_by(&:kick_off_date)
+    end
+  end
+  
 end
 
 
