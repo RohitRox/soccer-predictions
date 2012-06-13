@@ -44,15 +44,25 @@ class Match
     self[:kick_off_time]
   end
   
+  def competitors_not_decided?
+    [self.team_a, self.team_b].include?("TBD")
+  end
   
   # if the deadline for prediction has passed
   def prediction_deadline_passed?
     ((self.kick_off_time - DateTime.now) * 24 * 60).to_f <= 10
   end
   
+  
+  def open_for_prediction?
+    !prediction_deadline_passed? && !competitors_not_decided?
+  end
+  
   class << self
-    def all_grouped_by_kick_off_date
-      all(:kick_off_date.lte => Date.today, order: [:kick_off_time.desc]).group_by(&:kick_off_date)
+    def all_grouped_by_kick_off_date(limit = nil)
+      options = { :kick_off_date.lte => Date.today, order: [:kick_off_time.desc] }
+      options[:limit] = limit if limit
+      all(options).group_by(&:kick_off_date)
     end
   end
   
@@ -122,6 +132,13 @@ class User
       nil
     end
   end
+  
+  
+  # the prediction for the match
+  def prediction_for(match)
+    self.predictions.first(match_id: match.id)
+  end
+  
 end
 
 
@@ -135,6 +152,14 @@ class Prediction
   
   belongs_to :match
   belongs_to :user
+  
+  
+  def message
+    case self.result
+    when "Draw"; "You Predicted this match will be a draw"
+    else; "You predicted #{self.result} will win this match"
+    end
+  end
 end
 
 DataMapper.finalize

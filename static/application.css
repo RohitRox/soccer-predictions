@@ -1,3 +1,54 @@
-.content{
+.content {
   margin-top: 20px;
+}
+
+
+.match {
+  height: 75px;
+}
+
+.match .team_name {
+  padding: 15px 0px;
+  font-family: 'Josefin Slab',serif;
+  font-size: 18px;
+  font-weight: bolder;
+}
+
+.match .left {
+  text-align: right;
+}
+
+.match .right {
+  text-align: left;
+}
+
+.match .score {
+  padding: 15px 0px;
+  text-align: center;
+  font-family: monospace;
+  font-size: 20px;
+}
+
+.match .flag {
+  width: 60px;
+  height: 75px;
+}
+
+.match .prediction {
+  padding: 15px 0px;
+}
+
+form.prediction_form label{
+  color: #433;
+  font-size: 18px;
+  padding-bottom: 10px;
+  cursor: pointer;
+}
+
+form.prediction_form .alert{
+  display: none;
+}
+
+form.prediction_form input{
+/*  display: none;*/
 }

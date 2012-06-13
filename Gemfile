@@ -8,3 +8,5 @@ gem "dm-sqlite-adapter"
 
 gem "haml"
 gem "bcrypt-ruby"
+
+gem "json"
