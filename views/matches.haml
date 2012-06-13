@@ -1,12 +1,13 @@
-%div.span10{style: "display:block"}
+%div{style: "display:block"}
   - @matches_by_date.each do |date, matches|
-    %div.well{style: "min-height: 50px;display: block;"}
-      %h5= date
+    .row.well{style: "min-height: 50px;display: block;"}
+      %h3= date
       - matches.each do |match|
-        %div.span2= match.team_a
-        %div.span2
-          %img{src: country_flag_image(match.team_a) }
-        %div.span2 VS
-        %div.span2
-          %img{src: country_flag_image(match.team_b) }
-        %div.span2= match.team_b
+        .row
+          %div.span2= match.team_a
+          %div.span2
+            %img{src: country_flag_image(match.team_a) }
+          %div.span2 VS
+          %div.span2
+            %img{src: country_flag_image(match.team_b) }
+          %div.span2= match.team_b

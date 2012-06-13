@@ -27,8 +27,8 @@ class Match
   ]
 
   property :id, Serial
-  property :team_a, String, required: true, set: TEAMS.unshift("TBD")
-  property :team_b, String, required: true, set: TEAMS.unshift("TBD")
+  property :team_a, String, required: true, set: [*TEAMS, "TBD"]
+  property :team_b, String, required: true, set: [*TEAMS, "TBD"]
   property :kick_off_date, Date, required: true
   property :kick_off_time, DateTime, required: true
   property :group, String 
@@ -129,7 +129,7 @@ class Prediction
   include DataMapper::Resource 
   
   property :id, Serial
-  property :result, String, required: true, set: Match::TEAMS.unshift("Draw")
+  property :result, String, required: true, set: [*Match::TEAMS, "Draw"]
   
   timestamps :created_at, :updated_at
   

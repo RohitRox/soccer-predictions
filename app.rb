@@ -92,12 +92,6 @@ helpers do
   end
   
   def country_flag_image(country_name)
-    abbr = case country_name
-    when "Netherlands"; "NED"
-    when "Republic of Ireland"; "IRL"
-    when "Spain"; "ESP"
-    else; country_name[0..2].upcase
-    end
-    "http://img.uefa.com/imgml/flags/50x50/#{abbr}.png"
+    "images/#{country_name[0..2].upcase}.png"
   end
 end
