@@ -33,6 +33,7 @@ class Match
   property :kick_off_time, DateTime, required: true
   property :group, String 
   property :score, String
+  property :result, String
 
   timestamps :created_at, :updated_at
   
@@ -76,10 +77,10 @@ class User
 
   timestamps :created_at, :updated_at
 
-  property :id,           Serial
-  property :crypted_pass, String,   :length => 60..60, :required => true, :writer => :protected
-  property :email,        String,   :length => 5..200, :required => true,
-  :format => :email_address
+  property :id, Serial
+  property :crypted_pass, String, length: 60..60, required: true, writer: :protected
+  property :email, String, length: 5..200, required: true, format: :email_address
+  property :admin, Boolean, default: false
   
   has n, :predictions
 
@@ -88,6 +89,8 @@ class User
 
   before :valid?, :crypt_password
 
+  alias :admin? :admin
+  
   # check validity of password if we have a new resource, or there is a plaintext password provided
   def password_required?
     new? or password

@@ -7,7 +7,7 @@
           .span2.team_name.left{ team: match.team_a}= match.team_a
           .span1.flag
             %img{ src: country_flag_image(match.team_a) }
-          .span1.score= match.kick_off_time.strftime("%H:%M")
+          .span1.score= match.score || match.kick_off_time.strftime("%H:%M")
           .span1.flag
             %img{ src: country_flag_image(match.team_b) }
           .span2.team_name.right= match.team_b

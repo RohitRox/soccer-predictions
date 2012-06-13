@@ -18,6 +18,12 @@ before '/match/*/predict' do
   end
 end
 
+before "/match/*/result" do
+  unless admin?
+    halt 404
+  end
+end
+
 get '/' do
   @matches_by_date = Match.all_grouped_by_kick_off_date(limit=4)
   haml :matches
@@ -90,7 +96,26 @@ post "/match/:id/predict" do
   return_hash.to_json
 end
 
+get "/match/:id/result" do
+  @match = Match.get(params[:id])
+  haml :result
+end
 
+post "/match/:id/result" do
+  @match = Match.get(params[:id])
+  team_a_score = params[:team_a].to_i
+  team_b_score = params[:team_b].to_i
+  if team_a_score > team_b_score
+    @match.result = @match.team_a
+  elsif team_b_score > team_a_score
+    @match.result = @match.team_b
+  else
+    @match.result = "Draw"
+  end
+  @match.score = "#{team_a_score} - #{team_b_score}"
+  @match.save
+  haml :result
+end
 
 helpers do
   def current_user
@@ -103,5 +128,9 @@ helpers do
 
   def country_flag_image(country_name)
     "images/#{country_name[0..2].upcase}.png"
+  end
+  
+  def admin?
+    logged_in? && current_user.admin?
   end
 end

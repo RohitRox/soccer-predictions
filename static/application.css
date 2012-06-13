@@ -52,3 +52,7 @@ form.prediction_form .alert{
 form.prediction_form input{
 /*  display: none;*/
 }
+
+.input-prepend, .input-append {
+  display: inline-block;
+} 
