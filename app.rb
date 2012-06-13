@@ -113,7 +113,12 @@ post "/match/:id/result" do
     @match.result = "Draw"
   end
   @match.score = "#{team_a_score} - #{team_b_score}"
-  @match.save
+  if @match.save
+    @match.predictions.all(:result.not => @match.result).update(correct: false)
+    @match.predictions.all(result: @match.result).update(correct: true)
+  else
+    @error = "Score could not be updated"
+  end
   haml :result
 end
 
@@ -129,7 +134,7 @@ helpers do
   def country_flag_image(country_name)
     "images/#{country_name[0..2].upcase}.png"
   end
-  
+
   def admin?
     logged_in? && current_user.admin?
   end

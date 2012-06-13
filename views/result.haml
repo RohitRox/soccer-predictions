@@ -2,7 +2,7 @@
   %br
   %h2 Enter/Change the result for this match
   %br
-  %h3= "Previous: #{@match.result} : #{@match.score}"
+  %h3= "#{@match.result}: #{@match.score}"
   %br
   %form{ action: "/match/#{@match.id}/result", method: "post" }
     .input-prepend
@@ -13,6 +13,6 @@
       %input.span1#team_b{ type: "text", name: "team_b", required: true }
       %span.add-on= @match.team_b
     %br
-    %br      
+    %br
     %div
       %input.btn(type="submit" value="Submit")
