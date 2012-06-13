@@ -1,5 +1,18 @@
+body {
+  background-image: url("/images/grass-texture.jpg");
+  margin: 0px;
+  background-size: 107px 324px;
+  background-repeat: repeat;
+}
+
 .content {
   margin-top: 20px;
+}
+
+.well {
+  background-color:rgba(0,25,0,0.4);
+  color: #fff;
+  margin: 0px;
 }
 
 
@@ -55,4 +68,8 @@ form.prediction_form input{
 
 .input-prepend, .input-append {
   display: inline-block;
-} 
+}
+
+.add-on {
+  color: #555;
+}
