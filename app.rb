@@ -10,10 +10,10 @@ configure do
   enable :sessions
 end
 
-before '/match/*/predict' do
+before /\/((match\/\d\/predict)|reset_password)/ do
   unless logged_in?
     session[:previous_url] = request.env["REQUEST_PATH"]
-    @error = 'You need to be logged in to do that'
+    @error = "You need to be logged in to do that"
     halt haml(:login)
   end
 end
@@ -36,19 +36,19 @@ get '/schedule' do
 end
 
 
-get "/sign_up" do
-  @user = User.new
-  haml :sign_up
+get "/reset_password" do
+  haml :reset_password
 end
 
-post "/sign_up" do
-  @user = User.create(email: params[:email], password: params[:password], password_confirmation: params[:password_confirmation])
-
-  if @user.save
-    redirect "/"
+post "/reset_password" do
+  if current_user.authenticate(params[:current_password])
+    if current_user.reset_password(params[:password], params[:password_confirmation])
+      redirect "/"
+    end
   else
-    haml :sign_up
+    current_user.errors.add(:password, "Current Password is not correct")
   end
+  haml :reset_password
 end
 
 
