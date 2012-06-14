@@ -21,8 +21,8 @@
               %ul.dropdown-menu
                 - if logged_in?
                   %li
-                    %a{:href => "/log_out"} Log out
                     %a{:href => "/reset_password"} Reset password
+                    %a{:href => "/log_out"} Log out
                 - else
                   %li
                     %form{:action => "/login", :method => "post", style: "padding: 20px; margin: 0px;"}
