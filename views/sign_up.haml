@@ -1,18 +1,16 @@
-%p Enter the username and password!
 - if @user.errors.any?
   %ul.alert.alert-error
     - @user.errors.full_messages.each do |e|
       %li= e
-%form(action="/sign_up" method="post")
-  %div
-    %label(for="email")Email:
+%form.well(action="/sign_up" method="post")
+  %label(for="email")
+    Email:
     %input#username(type="text" name="email")
-  %div
-    %label(for="password")Password:
+  %label(for="password")
+    Password:
     %input#password(type="password" name="password")
-  %div
-    %label(for="password_confirmation")Password:
+  %label(for="password_confirmation")
+    Confirm Password:
     %input#password(type="password" name="password_confirmation")
-  %div
-    %input(type="submit" value="Sign Up")
-    %input(type="reset" value="Clear")
+  %br
+  %input.btn.btn-large(type="submit" value="Sign Up")

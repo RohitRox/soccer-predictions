@@ -116,10 +116,11 @@ post "/match/:id/result" do
   if @match.save
     @match.predictions.all(:result.not => @match.result).update(correct: false)
     @match.predictions.all(result: @match.result).update(correct: true)
+    redirect to "/schedule"
   else
     @error = "Score could not be updated"
+    haml :result
   end
-  haml :result
 end
 
 helpers do

@@ -2,7 +2,7 @@
   - @matches_by_date.each do |match|
     .row.well{ style: "min-height: 50px;display: block;"}
       %h3= match.nepali_kick_off_time.strftime("%A, %b %d")
-      - if admin?
+      - if admin? && match.completed?
         %a{href: "/match/#{match.id}/result"} Result
       .row.match
         .span2.team_name.left{ team: match.team_a}= match.team_a
