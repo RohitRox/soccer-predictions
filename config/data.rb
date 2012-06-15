@@ -56,7 +56,7 @@ class Match
 
   # if the deadline for prediction has passed
   def prediction_deadline_passed?
-    ((self.kick_off_time - DateTime.now) * 24 * 60).to_f <= 15
+    ((self.kick_off_time - relative_current_time) * 24 * 60).to_f <= 15
   end
 
 
@@ -65,7 +65,14 @@ class Match
   end
 
   def completed?
-    DateTime.now > (self.kick_off_time + 2.0/24)
+    relative_current_time > (self.kick_off_time + 2.0/24)
+  end
+
+  # since all kick_off_times are stored with the default time zone which should be in UTC
+  # hacked method to return the relative current time in utc
+  def relative_current_time
+    # server is -7:00 from UTC so add 7 hours to current time
+    DateTime.now + 7.0/24
   end
 
   class << self
@@ -154,9 +161,9 @@ class User
   def points
     self.predictions.all(correct: true).count
   end
-  
-  
-    
+
+
+
   def name
     self.email.split("@").first.strip
   end
@@ -184,9 +191,9 @@ class Prediction
     else; "You predicted #{self.result} will win this match"
     end
   end
-  
-  
-    
+
+
+
   def short_message
     "#{%w(certainly definitely undoubtedly indubitably unquestionably)[rand(5)]} #{self.result}"
   end
