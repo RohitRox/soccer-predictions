@@ -1,7 +1,7 @@
 !!!
 %html
   %head
-    %title EURO 2012
+    %title EURO PuNDIT
     %script{:src => "/lib/jquery-1.7.min.js", :type => "text/javascript"}
     %script{:src => "/lib/bootstrap/js/bootstrap.min.js"}
     %script{:src => "/application.js"}
@@ -12,7 +12,15 @@
       .navbar-inner
         .container
           %a.brand{:href => "/"}
-            EURO 2012
+            EURO PuNDIT
+          %ul.nav
+            %li
+              %a{href: "/schedule"} All Matches
+            - if logged_in?
+              %li
+                %a{href: "/predictions"}= "#{current_user.points} Points"
+              %li
+                %a{href: "/leaderboard"} Leaderboard
           %ul.nav.pull-right
             %li.dropdown
               %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}

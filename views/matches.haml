@@ -1,7 +1,9 @@
 %div
   - @matches_by_date.each do |match|
     .row.well{ style: "min-height: 50px;display: block;"}
-      %h3= match.nepali_kick_off_time.strftime("%A, %b %d")
+      %h3
+        = match.nepali_kick_off_time.strftime("%A, %b %d")
+        %span{style: "font-size: 75%;"}= " - #{match.group}"
       - if admin? && match.completed?
         %a{href: "/match/#{match.id}/result"} Result
       .row.match

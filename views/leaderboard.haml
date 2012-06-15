@@ -1,0 +1,11 @@
+%table.table.table-striped
+  %thead
+    %th Rank
+    %th Email
+    %th Points
+  %tbody
+    - @users.each_with_index do |user, index|
+      %tr
+        %td= index + 1
+        %td= user.email.split("@").first
+        %td= user.points
