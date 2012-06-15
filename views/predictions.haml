@@ -13,5 +13,8 @@
           - if match.result.nil?
             = "Match not finished"
           - else
-            = prediction.correct? ? "Correct" : "Incorrect"
+            - if prediction.correct?
+              %i.icon-ok
+            - else
+              %i.icon-remove
   
