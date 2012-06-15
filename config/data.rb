@@ -88,7 +88,7 @@ class User
 
   property :id, Serial
   property :crypted_pass, String, length: 60..60, required: true, writer: :protected
-  property :email, String, length: 5..200, required: true, format: :email_address
+  property :email, String, length: 5..200, required: true, format: :email_address, unique: true
   property :admin, Boolean, default: false
 
   has n, :predictions

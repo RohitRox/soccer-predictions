@@ -1,6 +1,9 @@
-require './config/data.rb'
+require "#{File.dirname(__FILE__)}/data.rb"
 
 class SeedData
+  
+  DEFAULT_PASSWORD = "italia"
+  
   # source http://www.uefa.com/uefaeuro/season=2012/matches/byround/index.html
   def self.create_matches
     # Matchday 1
@@ -56,4 +59,33 @@ class SeedData
     # Final
     Match.create(team_a: "TBD", team_b: "TBD", group: "Final", kick_off_time: "07/01 19:45")
   end
+  
+  
+  def self.create_users
+    csv_data[1..-1].map(&:first).map do |email|
+      User.create(email: email.strip, password: DEFAULT_PASSWORD, password_confirmation: DEFAULT_PASSWORD)
+    end
+  end
+  
+  
+  def self.csv_data
+    CSV.read("#{File.dirname(__FILE__)}/seeds.csv")
+  end
+  
+  
+  def self.populate_old_predictions
+    data = csv_data
+    matches = data.shift[1..-2].map do |teams| 
+      team_a, team_b = teams.split(" VS ").map(&:strip) 
+      Match.first(team_a: team_a, team_b: team_b)
+    end
+    
+    data.each do |row|
+      user = User.first(email: row[0].strip)
+      row[1..-2].each_with_index do |prediction, index|
+        user.predictions.create(match: matches[index], result: prediction) unless prediction.nil?
+      end
+    end
+  end
+  
 end
