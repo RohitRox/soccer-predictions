@@ -71,8 +71,8 @@ class Match
   # since all kick_off_times are stored with the default time zone which should be in UTC
   # hacked method to return the relative current time in utc
   def relative_current_time
-    # server is -7:00 from UTC so add 7 hours to current time
-    DateTime.now + 7.0/24
+    # server is -8:00 from UTC so add 8 hours to current time
+    DateTime.now + 8.0/24
   end
 
   class << self
