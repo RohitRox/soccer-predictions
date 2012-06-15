@@ -10,7 +10,7 @@ configure do
   enable :sessions
 end
 
-before /\/((match\/\d\/predict)|reset_password)/ do
+before /\/((match\/\d\/predict)|reset_password|predictions)/ do
   unless logged_in?
     session[:previous_url] = request.env["REQUEST_PATH"]
     @error = "You need to be logged in to do that"
@@ -33,6 +33,12 @@ end
 get '/schedule' do
   @matches_by_date = Match.all_grouped_by_kick_off_date
   haml :matches
+end
+
+
+get "/predictions" do
+  @predictions = current_user.predictions.sort_by{|p| p.match.kick_off_time }.reverse
+  haml :predictions
 end
 
 
