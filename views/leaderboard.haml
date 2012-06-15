@@ -7,5 +7,8 @@
     - @users.each_with_index do |user, index|
       %tr
         %td= index + 1
-        %td= user.email.split("@").first
+        %td
+          = user.email.split("@").first
+          - if current_user == user
+            %i.icon-star.icon-white
         %td= user.points
