@@ -1,4 +1,8 @@
 $(function() {  
+  
+  $('html, body').animate({ scrollTop: $('#today').offset().top }, 'slow');
+  $("#today").append("<i class='icon-star'></i>");
+  
   $(".submit_prediction").click(function() {
     var that = $(this);
     var form = that.parents("form");
