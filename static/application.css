@@ -49,6 +49,7 @@ body {
 
 .match .prediction {
   padding: 15px 0px;
+  text-align: center;
 }
 
 form.prediction_form label{
@@ -78,4 +79,21 @@ form.prediction_form input{
   background-color: rgba(215, 190, 185, 0.7);
   color: #922;
   padding-left: 30px;
+}
+
+h3 a{
+  float: right;
+}
+
+a.brand {
+  height: 35px;
+  vertical-align: top;
+}
+a.brand img {
+  margin-left: -160px;
+  margin-top: -20px;
+}
+
+.modal {
+  background-color: rgba(0,0,0,0);
 }

@@ -12,15 +12,22 @@
       .navbar-inner
         .container
           %a.brand{:href => "/"}
+            %img{src: "/images/pundit.png"}
             EURO PuNDIT
           %ul.nav
             %li
-              %a{href: "/schedule"} All Matches
+              %a{href: "/schedule"}
+                %i.icon-calendar.icon-white
+                Schedule
             - if logged_in?
               %li
-                %a{href: "/predictions"}= "#{current_user.points} Points"
+                %a{href: "/predictions"}
+                  %i.icon-star-empty.icon-white
+                  = "#{current_user.points} Points"
               %li
-                %a{href: "/leaderboard"} Leaderboard
+                %a{href: "/leaderboard"}
+                  %i.icon-user.icon-white
+                  Leaderboard
           %ul.nav.pull-right
             %li.dropdown
               %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#"}

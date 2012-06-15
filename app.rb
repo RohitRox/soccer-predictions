@@ -10,7 +10,7 @@ configure do
   enable :sessions
 end
 
-before /\/((match\/\d\/predict)|reset_password|predictions|leaderboard)/ do
+before /\/((match\/\d\/predict)|reset_password|predictions|leaderboard|(match\/\d\/predictions))/ do
   unless logged_in?
     session[:previous_url] = request.env["REQUEST_PATH"]
     @error = "You need to be logged in to do that"
@@ -49,6 +49,18 @@ end
 
 get "/reset_password" do
   haml :reset_password
+end
+
+
+get "/match/:id/predictions" do
+  @match = Match.get(params[:id])
+  if @match.prediction_deadline_passed?
+    @predictions = @match.predictions.sort_by{|p| p.user.email }
+  else
+    @predictions = @match.predictions.all(user_id: current_user.id)
+    @error = "You can only view other's predictions after the match kicks off at #{@match.nepali_kick_off_time.strftime("%l:%M %p, %b %e")}"
+  end
+  haml :match_predictions
 end
 
 post "/reset_password" do

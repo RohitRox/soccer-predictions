@@ -56,7 +56,7 @@ class Match
 
   # if the deadline for prediction has passed
   def prediction_deadline_passed?
-    ((self.kick_off_time - DateTime.now) * 24 * 60).to_f <= 10
+    ((self.kick_off_time - DateTime.now) * 24 * 60).to_f <= 15
   end
 
 
@@ -154,6 +154,12 @@ class User
   def points
     self.predictions.all(correct: true).count
   end
+  
+  
+    
+  def name
+    self.email.split("@").first.strip
+  end
 
 end
 
@@ -177,6 +183,12 @@ class Prediction
     when "Draw"; "You predicted this match will be a draw"
     else; "You predicted #{self.result} will win this match"
     end
+  end
+  
+  
+    
+  def short_message
+    "#{%w(certainly definitely undoubtedly indubitably unquestionably)[rand(5)]} #{self.result}"
   end
 end
 
