@@ -39,7 +39,7 @@ get '/' do
     etag "home_#{Date.today > Match.last_updated.to_date ? Date.today : Match.last_updated}"
   end
   @matches_by_date = Match.all_grouped_by_kick_off_date(limit=4)
-  haml :matches
+  haml :matches, layout: !request.xhr?
 end
 
 
@@ -49,7 +49,7 @@ get '/schedule' do
     etag "home_#{Date.today > Match.last_updated.to_date ? Date.today : Match.last_updated}"
   end
   @matches_by_date = Match.all(order: [:kick_off_time.desc])
-  haml :matches
+  haml :matches, layout: !request.xhr?
 end
 
 
@@ -72,7 +72,7 @@ get "/leaderboard" do
 end
 
 get "/reset_password" do
-  haml :reset_password
+  haml :reset_password, layout: !request.xhr?
 end
 
 
@@ -109,7 +109,7 @@ get '/login' do
   cache_control :public
   etag "login"
 
-  haml :login
+  haml :login, layout: !request.xhr?
 end
 
 post '/login' do
@@ -120,7 +120,7 @@ post '/login' do
     redirect to where_user_came_from
   else
     @error = "Incorrect Email/Password"
-    haml(:login)
+    haml :login, layout: !request.xhr?
   end
 end
 

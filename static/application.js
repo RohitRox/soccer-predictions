@@ -1,5 +1,18 @@
 $(function() {
 
+  // Prepare our Variables
+  var
+    History = window.History,
+    $ = window.jQuery,
+    document = window.document;
+
+  // Check to see if History.js is enabled for our Browser
+  if ( !History.enabled ) {
+    return false;
+  }
+
+
+
   $(".submit_prediction").on("click", function(event) {
     var that = $(this);
     that.attr("disabled", "disabled");
@@ -34,19 +47,17 @@ $(function() {
 
 
   $("a[data-remote]").on("click", function(event){
-    var that = $(this);
-    var content = $('.content');
-    // content.animate({opacity:0}, 500);
-    $("#dummy_modal .modal").modal("show");
-    $.ajax({
-      type: "GET",
-      url: that.attr("href"),
-      success: function(data){
-        $('.content').html(data);
-        $("#dummy_modal .modal").modal("hide");
-        highlight_current_user_row();
-      }
-    });
+    var that = $(this),
+        url = that.attr('href'),
+        title = that.attr('title');
+
+
+    // Continue as normal for cmd clicks etc
+    if ( event.which == 2 || event.metaKey ) { return true; }
+
+    // Push into history
+    History.pushState(null, title, url);
+
     event.preventDefault();
     return false;
   });
@@ -64,5 +75,27 @@ $(function() {
   }
 
   highlight_current_user_row();
+
+  $(window).bind('statechange',function(){
+    var State = History.getState(),
+        url = State.url;
+
+    $("#dummy_modal .modal").modal("show");
+
+    $.ajax({
+      type: "GET",
+      url: url,
+      success: function(data){
+        $('.content').html(data);
+        $("#dummy_modal .modal").modal("hide");
+        highlight_current_user_row();
+      },
+      error: function(jqXHR, textStatus, errorThrown){
+        document.location.href = url;
+        return false;
+      }
+    });
+
+  });
 
 });

@@ -56,4 +56,5 @@
     %script{type: "text/javascript"}
       current_user_id = '#{logged_in? ? current_user.id : 0}';
     %script{:src => "/lib/bootstrap/js/bootstrap.min.js"}
+    %script{:defer => "", :src => "/lib/jquery.history.js"}
     %script{:src => "/application.js"}
