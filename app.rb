@@ -5,9 +5,16 @@ require 'json'
 
 require './config/data.rb'
 
+require 'rack/cache'
+
+
+use Rack::Cache, verbose: true, metastore: "file:./static/cache/rack/meta", entitystore: 'file:./static/cache/rack/body', allow_reload: false, allow_revalidate: false
+
 configure do
   set :public_folder, Proc.new { File.join(root, "static") }
   enable :sessions
+
+  set :static_cache_control, :public
 end
 
 before /\/((match\/\d\/predict)|reset_password|predictions|leaderboard|(match\/\d\/predictions))/ do
@@ -24,13 +31,25 @@ before "/match/*/result" do
   end
 end
 
+before /\/(leaderboard|(match\/\d\/predictions)|login)/ do
+  cache_control :public
+end
+
 get '/' do
+  unless logged_in?
+    cache_control :public
+    etag "home_#{Date.today}"
+  end
   @matches_by_date = Match.all_grouped_by_kick_off_date(limit=4)
   haml :matches
 end
 
 
 get '/schedule' do
+  unless logged_in?
+    cache_control :public
+    etag "home_#{Date.today}"
+  end
   @matches_by_date = Match.all(order: [:kick_off_time.desc])
   haml :matches
 end
@@ -43,6 +62,8 @@ end
 
 
 get "/leaderboard" do
+  etag "leaderboard_#{Match.last_updated}"
+
   @users = User.all.sort_by(&:points).reverse
   haml :leaderboard
 end
@@ -54,11 +75,13 @@ end
 
 get "/match/:id/predictions" do
   @match = Match.get(params[:id])
+  etag "match_#{params[:id]}_predictions_#{@match.updated_at}"
+
   if @match.prediction_deadline_passed?
     @predictions = @match.predictions.sort_by{|p| p.user.email }
   else
-    @predictions = @match.predictions.all(user_id: current_user.id)
-    @error = "You can only view other's predictions after the match kicks off at #{@match.nepali_kick_off_time.strftime("%l:%M %p, %b %e")}"
+    @predictions = []
+    @error = "You can only view other's predictions after the match kicks off"
   end
   haml :match_predictions
 end
@@ -76,6 +99,7 @@ end
 
 
 get '/login' do
+  etag "login"
   haml :login
 end
 

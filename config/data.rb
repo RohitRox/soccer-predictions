@@ -75,13 +75,21 @@ class Match
     DateTime.now + 8.0/24
   end
 
+  after :save do |match|
+    match.class.last_updated = Time.now
+  end
+
   class << self
+    attr_accessor :last_updated
+
     def all_grouped_by_kick_off_date(limit = nil)
       options = { :kick_off_date.lte => Date.today, order: [:kick_off_time.desc] }
       options[:limit] = limit if limit
       all(options)#.group_by(&:kick_off_date)
     end
   end
+
+  self.last_updated = Time.now
 
 end
 
@@ -161,8 +169,6 @@ class User
   def points
     self.predictions.all(correct: true).count
   end
-
-
 
   def name
     self.email.split("@").first.strip
