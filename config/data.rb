@@ -167,7 +167,7 @@ class User
   end
 
   def points
-    self.predictions.all(correct: true).count
+    @point ||= self.predictions.all(correct: true).count
   end
 
   def name

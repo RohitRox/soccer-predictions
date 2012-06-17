@@ -65,7 +65,7 @@ end
 get "/leaderboard" do
   etag "leaderboard_#{Match.last_updated}"
 
-  @users = User.all.sort_by(&:points).reverse
+  @grouped_users = User.all.group_by(&:points).sort_by{|k,v| k}.reverse
   haml :leaderboard
 end
 
