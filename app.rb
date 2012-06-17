@@ -8,13 +8,14 @@ require './config/data.rb'
 require 'rack/cache'
 
 
-use Rack::Cache, verbose: true, metastore: "file:./static/cache/rack/meta", entitystore: 'file:./static/cache/rack/body', allow_reload: false, allow_revalidate: false
-
 configure do
   set :public_folder, Proc.new { File.join(root, "static") }
   enable :sessions
 
-  set :static_cache_control, :public
+  if settings.environment == "production"
+    use Rack::Cache, verbose: true, metastore: "file:./static/cache/rack/meta", entitystore: 'file:./static/cache/rack/body', allow_reload: false, allow_revalidate: false
+    set :static_cache_control, :public
+  end
 end
 
 before /\/((match\/\d\/predict)|reset_password|predictions|leaderboard|(match\/\d\/predictions))/ do
