@@ -32,9 +32,9 @@ before "/match/*/result" do
   end
 end
 
-before /\/(leaderboard|(match\/\d\/predictions)|login)/ do
-  cache_control :public
-end
+# before /\/(leaderboard|(match\/\d\/predictions)|login)/ do
+#   cache_control :public
+# end
 
 get '/' do
   unless logged_in?
@@ -63,7 +63,7 @@ end
 
 
 get "/leaderboard" do
-  etag "leaderboard_#{Match.last_updated}"
+  # etag "leaderboard_#{Match.last_updated}"
 
   @grouped_users = User.all.group_by(&:points).sort_by{|k,v| k}.reverse
   haml :leaderboard
@@ -76,7 +76,7 @@ end
 
 get "/match/:id/predictions" do
   @match = Match.get(params[:id])
-  etag "match_#{params[:id]}_predictions_#{@match.updated_at}"
+  # etag "match_#{params[:id]}_predictions_#{@match.updated_at}"
 
   if @match.prediction_deadline_passed?
     @predictions = @match.predictions.sort_by{|p| p.user.email }
@@ -100,7 +100,9 @@ end
 
 
 get '/login' do
+  cache_control :public
   etag "login"
+
   haml :login
 end
 
