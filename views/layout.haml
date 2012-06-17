@@ -22,11 +22,11 @@
                 Schedule
             - if logged_in?
               %li
-                %a{href: "/predictions"}
+                %a{href: "/user/#{current_user.id}/predictions", 'data-remote' => true}
                   %i.icon-star-empty.icon-white
                   = "#{current_user.points} Points"
               %li
-                %a{href: "/leaderboard"}
+                %a{href: "/leaderboard", 'data-remote' => true}
                   %i.icon-user.icon-white
                   Leaderboard
           %ul.nav.pull-right
@@ -49,3 +49,5 @@
       - if @error then
         .alert.alert-error= @error
       = yield
+%script{type: "text/javascript"}
+  current_user_id = '#{logged_in? ? current_user.id : 0}';

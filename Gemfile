@@ -15,3 +15,7 @@ gem "haml"
 gem "bcrypt-ruby"
 
 gem "json"
+
+group :development do
+  gem 'pry'
+end

@@ -4,7 +4,7 @@
       = match.nepali_kick_off_time.strftime("%A, %b %d")
       %span{style: "font-size: 75%;"}= " - #{match.group}"
       - if logged_in? && match.prediction_deadline_passed?
-        %a{href: "match/#{match.id}/predictions"}
+        %a{href: "match/#{match.id}/predictions", "data-remote" => true}
           %i.icon-eye-open.icon-white
     - if admin? && match.completed?
       %a{href: "/match/#{match.id}/result"} Result

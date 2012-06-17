@@ -7,10 +7,11 @@ require './config/data.rb'
 
 require 'rack/cache'
 
-
 configure do
   set :public_folder, Proc.new { File.join(root, "static") }
   enable :sessions
+
+  # set :environment, :production
 
   if settings.environment.to_s == "production"
     use Rack::Cache, verbose: true, metastore: Dalli::Client.new, entitystore: 'file:tmp/cache/rack/body', allow_reload: false, allow_revalidate: false
@@ -32,10 +33,6 @@ before "/match/*/result" do
   end
 end
 
-# before /\/(leaderboard|(match\/\d\/predictions)|login)/ do
-#   cache_control :public
-# end
-
 get '/' do
   unless logged_in?
     cache_control :public
@@ -56,17 +53,22 @@ get '/schedule' do
 end
 
 
-get "/predictions" do
+get "/user/:id/predictions" do
+  cache_control :public
+  etag "user_#{current_user.id}_predictions_#{current_user.last_activity}"
+
   @predictions = current_user.predictions.sort_by{|p| p.match.kick_off_time }.reverse
-  haml :predictions
+  haml :predictions, layout: !request.xhr?
 end
 
 
 get "/leaderboard" do
-  # etag "leaderboard_#{Match.last_updated}"
-
+  if request.xhr?
+    cache_control :public
+    etag "leaderboard_#{Match.last_updated}"
+  end
   @grouped_users = User.all.group_by(&:points).sort_by{|k,v| k}.reverse
-  haml :leaderboard
+  haml :leaderboard, layout: !request.xhr?
 end
 
 get "/reset_password" do
@@ -76,7 +78,11 @@ end
 
 get "/match/:id/predictions" do
   @match = Match.get(params[:id])
-  # etag "match_#{params[:id]}_predictions_#{@match.updated_at}"
+
+  if request.xhr?
+    cache_control :public
+    etag "match_#{params[:id]}_predictions_#{@match.updated_at}"
+  end
 
   if @match.prediction_deadline_passed?
     @predictions = @match.predictions.sort_by{|p| p.user.email }
@@ -84,7 +90,7 @@ get "/match/:id/predictions" do
     @predictions = []
     @error = "You can only view other's predictions after the match kicks off"
   end
-  haml :match_predictions
+  haml :match_predictions, layout: !request.xhr?
 end
 
 post "/reset_password" do
@@ -137,6 +143,7 @@ post "/match/:id/predict" do
     prediction = current_user.predictions.first_or_create(match_id: match.id)
     prediction.result = params[:prediction]
     if prediction.save
+      current_user.update(last_activity: DateTime.now)
       return_hash[:result] = prediction.message
     else
      return_hash[:error] = "You can't do that. Trying something naughty huh?"

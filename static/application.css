@@ -101,3 +101,20 @@ a.brand img {
 .modal {
   background-color: rgba(0,0,0,0);
 }
+
+#modal_container .modal{
+  /*height: 800px;*/
+  width: 800px;
+  margin-left: -400px;
+}
+
+#modal_container .modal .modal-body {
+  max-height: 10000px;
+  height: 800px;
+}
+
+h2.well {
+  padding: 0px 50px;
+  margin: 0px;
+  text-align: center;
+}
