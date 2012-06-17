@@ -5,6 +5,8 @@ gem "sinatra"
 
 gem "rack-cache"
 
+gem "dalli"
+
 gem "data_mapper"
 gem "dm-sqlite-adapter"
 gem "dm-postgres-adapter"
