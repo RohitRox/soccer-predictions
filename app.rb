@@ -12,7 +12,7 @@ configure do
   set :public_folder, Proc.new { File.join(root, "static") }
   enable :sessions
 
-  if settings.environment == "production"
+  if settings.environment.to_s == "production"
     use Rack::Cache, verbose: true, metastore: "file:./static/cache/rack/meta", entitystore: 'file:./static/cache/rack/body', allow_reload: false, allow_revalidate: false
     set :static_cache_control, :public
   end
@@ -39,7 +39,7 @@ end
 get '/' do
   unless logged_in?
     cache_control :public
-    etag "home_#{Date.today}"
+    etag "home_#{Date.today > Match.last_updated.to_date ? Date.today : Match.last_updated}"
   end
   @matches_by_date = Match.all_grouped_by_kick_off_date(limit=4)
   haml :matches
@@ -49,7 +49,7 @@ end
 get '/schedule' do
   unless logged_in?
     cache_control :public
-    etag "home_#{Date.today}"
+    etag "home_#{Date.today > Match.last_updated.to_date ? Date.today : Match.last_updated}"
   end
   @matches_by_date = Match.all(order: [:kick_off_time.desc])
   haml :matches
