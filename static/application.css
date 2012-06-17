@@ -6,7 +6,7 @@ body {
 }
 
 .content {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .well {
@@ -61,6 +61,10 @@ form.prediction_form label{
 
 form.prediction_form .alert{
   display: none;
+}
+
+.icon-hand-right {
+  float: right;
 }
 
 form.prediction_form input{
