@@ -36,16 +36,15 @@ $(function() {
   $("a[data-remote]").on("click", function(event){
     var that = $(this);
     var content = $('.content');
-    content.animate({opacity:0}, 500);
+    // content.animate({opacity:0}, 500);
+    $("#dummy_modal .modal").modal("show");
     $.ajax({
       type: "GET",
       url: that.attr("href"),
       success: function(data){
-        $('.content').html(data).animate({opacity:100}, 500);
-        var user_table_td = $(".leaderboard tr#user_" + current_user_id + "_points td:first");
-        if (user_table_td.length > 0){
-          user_table_td.append("<i class='icon-hand-right'></i>");
-        }
+        $('.content').html(data);
+        $("#dummy_modal .modal").modal("hide");
+        highlight_current_user_row();
       }
     });
     event.preventDefault();
@@ -55,5 +54,37 @@ $(function() {
   if($("#today").length > 0){
     $('html, body').animate({ scrollTop: $('#today').offset().top }, 'slow');
   }
+
+
+  highlight_current_user_row = function(){
+    var user_table_td = $(".leaderboard tr#user_" + current_user_id + "_points td:first");
+    if (user_table_td.length > 0){
+      user_table_td.append("<i class='icon-hand-right'></i>");
+    }
+  }
+
+  start_spinner = function(){
+    var opts = {
+      lines: 13, // The number of lines to draw
+      length: 30, // The length of each line
+      width: 12, // The line thickness
+      radius: 23, // The radius of the inner circle
+      rotate: 28, // The rotation offset
+      color: '#fff', // #rgb or #rrggbb
+      speed: 1.3, // Rounds per second
+      trail: 42, // Afterglow percentage
+      shadow: true, // Whether to render a shadow
+      hwaccel: false, // Whether to use hardware acceleration
+      className: 'spinner', // The CSS class to assign to the spinner
+      zIndex: 2e9, // The z-index (defaults to 2000000000)
+      top: 'auto', // Top position relative to parent in px
+      left: 'auto' // Left position relative to parent in px
+    };
+    var target = document.getElementById('spinner');
+    var spinner = new Spinner(opts).spin(target);
+  }
+
+  start_spinner();
+  highlight_current_user_row();
 
 });

@@ -99,18 +99,19 @@ a.brand img {
 }
 
 .modal {
-  background-color: rgba(0,0,0,0);
+  background-color: transparent;
 }
 
-#modal_container .modal{
-  /*height: 800px;*/
-  width: 800px;
-  margin-left: -400px;
+#dummy_modal .modal {
+  border: none;
+  box-shadow: none;
+  overflow: hidden;
 }
 
-#modal_container .modal .modal-body {
-  max-height: 10000px;
-  height: 800px;
+#dummy_modal .modal .modal-body{
+  background-color: transparent;
+  padding: 300px;
+  overflow: hideen;
 }
 
 h2.well {
