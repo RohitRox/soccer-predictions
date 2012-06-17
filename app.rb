@@ -13,7 +13,7 @@ configure do
   enable :sessions
 
   if settings.environment.to_s == "production"
-    use Rack::Cache, verbose: true, metastore: "file:./static/cache/rack/meta", entitystore: 'file:./static/cache/rack/body', allow_reload: false, allow_revalidate: false
+    use Rack::Cache, verbose: true, metastore: "file:./tmp/cache/rack/meta", entitystore: 'file:./tmp/cache/rack/body', allow_reload: false, allow_revalidate: false
     set :static_cache_control, :public
   end
 end
