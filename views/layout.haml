@@ -49,7 +49,9 @@
 
     #dummy_modal
       .modal.hide
-        .modal-body#spinner
+        .modal-body
+          .circle
+          .circle1
 
     %script{type: "text/javascript"}
       current_user_id = '#{logged_in? ? current_user.id : 0}';
